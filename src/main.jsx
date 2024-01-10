@@ -1,23 +1,25 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter as Router } from "react-router-dom";
+import { ThirdwebProvider, useContract } from "@thirdweb-dev/react";
+import { Sepolia } from "@thirdweb-dev/chains";
+
 import App from "./App";
-import { ThirdwebProvider } from "@thirdweb-dev/react";
-import "./styles/globals.css";
 
-// This is the chain your dApp will work on.
-// Change this to the chain your app is built for.
-// You can also import additional chains from `@thirdweb-dev/chains` and pass them directly.
-const activeChain = "ethereum";
+const rootElement = document.getElementById("root");
 
-const container = document.getElementById("root");
-const root = createRoot(container);
-root.render(
-  <React.StrictMode>
+if (rootElement) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
     <ThirdwebProvider
-      clientId={import.meta.env.VITE_TEMPLATE_CLIENT_ID}
-      activeChain={activeChain}
+      activeChain={Sepolia}
+      clientId={process.env.THIRDWEB_CLIENT_ID}
     >
-      <App />
+      <Router>
+        <App />
+      </Router>
     </ThirdwebProvider>
-  </React.StrictMode>
-);
+  );
+} else {
+  console.error("Root element not found");
+}
