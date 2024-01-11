@@ -5,6 +5,7 @@ import { ThirdwebProvider, useContract } from "@thirdweb-dev/react";
 import { Sepolia } from "@thirdweb-dev/chains";
 
 import App from "./App";
+import "./index.css";
 
 const rootElement = document.getElementById("root");
 
