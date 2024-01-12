@@ -12,7 +12,7 @@ import { ethers } from "ethers";
 interface StateContextType {
   address: string | null;
   contract: any; // Adjust the type according to your contract type
-  connect: any; // Replace 'useMetamask' with 'ConnectWallet'
+  connect: any; // Replace 'useMetamask' with 'useConnect'
   createCampaign: (form: {
     title: string;
     description: string;
@@ -137,7 +137,7 @@ export const StateContextProvider = ({ children }) => {
     <StateContext.Provider
       value={{
         contract,
-        connect, // Replace 'useMetamask' with 'ConnectWallet'
+        connect, // Replace 'useMetamask' with 'useConnect'
         walletConfig,
         createCampaign: publishCampaign,
         getCampaigns,
