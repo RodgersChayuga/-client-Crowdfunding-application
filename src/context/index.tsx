@@ -1,29 +1,54 @@
 import React, { useContext, createContext } from "react";
-
 import {
+  useConnect,
+  metamaskWallet,
   useAddress,
   useContract,
-  useMetamask,
   useContractWrite,
 } from "@thirdweb-dev/react";
-import { ethers } from "ethers";
-import { EditionMetadataWithOwnerOutputSchema } from "@thirdweb-dev/sdk";
 
-const StateContext = createContext();
+import { ethers } from "ethers";
+
+interface StateContextType {
+  address: string | null;
+  contract: any; // Adjust the type according to your contract type
+  connect: any; // Replace 'useMetamask' with 'ConnectWallet'
+  createCampaign: (form: {
+    title: string;
+    description: string;
+    target: string;
+    deadline: string;
+    image: string;
+  }) => Promise<void>;
+  getCampaigns: () => Promise<any[]>;
+  getUserCampaigns: () => Promise<any[]>;
+  donate: (pId: number, amount: string) => Promise<void>;
+  getDonations: (pId: number) => Promise<any[]>;
+}
+
+const walletConfig = metamaskWallet();
+
+const StateContext = createContext({} as StateContextType);
 
 export const StateContextProvider = ({ children }) => {
   const { contract } = useContract(
-    "0xf59A1f8251864e1c5a6bD64020e3569be27e6AA9"
+    "0x6289c4aDB1F1D16771403C5C1B95700c9F876c84"
   );
   const { mutateAsync: createCampaign } = useContractWrite(
     contract,
     "createCampaign"
   );
 
+  const connect = useConnect();
+  const walletConfig = metamaskWallet();
   const address = useAddress();
-  const connect = useMetamask();
 
   const publishCampaign = async (form) => {
+    if (!contract) {
+      console.log("Contract is not defined");
+      return;
+    }
+
     try {
       const data = await createCampaign({
         args: [
@@ -43,6 +68,11 @@ export const StateContextProvider = ({ children }) => {
   };
 
   const getCampaigns = async () => {
+    if (!contract) {
+      console.log("Contract is not defined");
+      return;
+    }
+
     const campaigns = await contract.call("getCampaigns");
 
     const parsedCampaings = campaigns.map((campaign, i) => ({
@@ -72,6 +102,10 @@ export const StateContextProvider = ({ children }) => {
   };
 
   const donate = async (pId, amount) => {
+    if (!contract) {
+      console.log("Contract is not defined");
+      return;
+    }
     const data = await contract.call("donateToCampaign", [pId], {
       value: ethers.utils.parseEther(amount),
     });
@@ -79,11 +113,15 @@ export const StateContextProvider = ({ children }) => {
     return data;
   };
 
-  const getDonations = async (pId) => {
+  const getDonations = async (pId: number) => {
+    if (!contract) {
+      console.log("Contract is not defined");
+      return;
+    }
     const donations = await contract.call("getDonators", [pId]);
     const numberOfDonations = donations[0].length;
 
-    const parsedDonations = [];
+    const parsedDonations: { donator: any; donation: string }[] = [];
 
     for (let i = 0; i < numberOfDonations; i++) {
       parsedDonations.push({
@@ -98,9 +136,9 @@ export const StateContextProvider = ({ children }) => {
   return (
     <StateContext.Provider
       value={{
-        address,
         contract,
-        connect,
+        connect, // Replace 'useMetamask' with 'ConnectWallet'
+        walletConfig,
         createCampaign: publishCampaign,
         getCampaigns,
         getUserCampaigns,
