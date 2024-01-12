@@ -1,18 +1,32 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useConnect, useAddress, metamaskWallet } from "@thirdweb-dev/react";
 
-// import { useStateContext } from "../context";
 import { CustomButton } from "./";
 import { logo, menu, search, thirdweb } from "../assets";
 import { navlinks } from "../constants";
 
 const Navbar = () => {
+  const walletConfig = metamaskWallet();
+  const connect = useConnect();
+  const address = useAddress();
+
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState("dashboard");
   const [toggleDrawer, setToggleDrawer] = useState(false);
-  // const { connect, address } = useStateContext();
 
-  const address = "0x";
+  async function handleConnect() {
+    if (address) navigate("create-campaign");
+    try {
+      const wallet = await connect(
+        walletConfig // pass the wallet config object
+      );
+
+      console.log("connected to", wallet);
+    } catch (e) {
+      console.error("failed to connect", e);
+    }
+  }
 
   return (
     <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
@@ -32,17 +46,13 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className="sm:flex hidden flex-row justify-end gap-4">
+      <div className="flex-row justify-end hidden gap-4 sm:flex">
         <CustomButton
           btnType="button"
           title={address ? "Create a campaign" : "Connect"}
           styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
-          handleClick={() => {
-            // if (address) navigate("create-campaign");
-            // else connect();
-          }}
+          handleClick={handleConnect}
         />
-
         <Link to="/profile">
           <div className="w-[52px] h-[52px] rounded-full bg-[#2c2f32] flex justify-center items-center cursor-pointer">
             <img
@@ -55,7 +65,7 @@ const Navbar = () => {
       </div>
 
       {/* Small screen navigation */}
-      <div className="sm:hidden flex justify-between items-center relative">
+      <div className="relative flex items-center justify-between sm:hidden">
         <div className="w-[40px] h-[40px] rounded-[10px] bg-[#2c2f32] flex justify-center items-center cursor-pointer">
           <img
             src={logo}
@@ -112,10 +122,7 @@ const Navbar = () => {
               btnType="button"
               title={address ? "Create a campaign" : "Connect"}
               styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
-              handleClick={() => {
-                // if (address) navigate("create-campaign");
-                // else connect();
-              }}
+              handleClick={handleConnect}
             />
           </div>
         </div>
