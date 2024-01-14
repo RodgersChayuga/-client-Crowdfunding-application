@@ -8,4 +8,12 @@ export default defineConfig({
   define: {
     "process.env": {},
   },
+  build: {
+    rollupOptions: {
+      onwarn(warning, rollupWarn) {
+        if (warning.code === "MODULE_LEVEL_DIRECTIVE") return;
+        rollupWarn(warning);
+      },
+    },
+  },
 });

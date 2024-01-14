@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "babel src -d lib",
+    "build": "node --max-old-space-size=4096 ./node_modules/.bin/vite build",
     "test": "jest",
     "preview": "vite preview",
     "deploy": "yarn build && npx thirdweb@latest upload dist"
