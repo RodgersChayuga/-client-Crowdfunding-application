@@ -12,26 +12,23 @@ import { Sepolia } from "@thirdweb-dev/chains";
 
 import App from "./App";
 import "./index.css";
+import { StateContextProvider } from "./context";
 
 const rootElement = document.getElementById("root");
+const sepolia = Sepolia;
 
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <ThirdwebProvider
-      supportedWallets={[
-        metamaskWallet({
-          recommended: true,
-        }),
-        coinbaseWallet(),
-        walletConnect(),
-      ]}
-      activeChain={Sepolia}
-      clientId={process.env.THIRDWEB_CLIENT_ID}
+      activeChain={sepolia}
+      clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
     >
-      <Router>
-        <App />
-      </Router>
+      <StateContextProvider>
+        <Router>
+          <App />
+        </Router>
+      </StateContextProvider>
     </ThirdwebProvider>
   );
 } else {
