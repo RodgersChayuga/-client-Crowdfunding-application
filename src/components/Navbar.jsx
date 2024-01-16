@@ -26,6 +26,7 @@ const Navbar = () => {
     } catch (e) {
       console.error("failed to connect", e);
     }
+    setToggleDrawer(false);
   }
 
   return (
@@ -87,34 +88,38 @@ const Navbar = () => {
           } transition-all duration-700`}
         >
           <ul className="mb-4">
-            {navlinks.map((link) => (
-              <li
-                key={link.name}
-                className={`flex p-4 ${
-                  isActive === link.name && "bg-[#3a3a43]"
-                }`}
-                onClick={() => {
-                  setIsActive(link.name);
-                  setToggleDrawer(false);
-                  navigate(link.link);
-                }}
-              >
-                <img
-                  src={link.imgUrl}
-                  alt={link.name}
-                  className={`w-[24px] h-[24px] object-contain ${
-                    isActive === link.name ? "grayscale-0" : "grayscale"
+            {navlinks.map((link) =>
+              link.name === "logout" && !address ? null : (
+                <li
+                  key={link.name}
+                  className={`flex p-4 ${
+                    isActive === link.name && "bg-[#3a3a43]"
                   }`}
-                />
-                <p
-                  className={`ml-[20px] font-epilogue font-semibold text-[14px] ${
-                    isActive === link.name ? "text-[#1dc071]" : "text-[#808191]"
-                  }`}
+                  onClick={() => {
+                    setIsActive(link.name);
+                    setToggleDrawer(false);
+                    navigate(link.link);
+                  }}
                 >
-                  {link.name}
-                </p>
-              </li>
-            ))}
+                  <img
+                    src={link.imgUrl}
+                    alt={link.name}
+                    className={`w-[24px] h-[24px] object-contain ${
+                      isActive === link.name ? "grayscale-0" : "grayscale"
+                    }`}
+                  />
+                  <p
+                    className={`ml-[20px] font-epilogue font-semibold text-[14px] ${
+                      isActive === link.name
+                        ? "text-[#1dc071]"
+                        : "text-[#808191]"
+                    }`}
+                  >
+                    {link.name}
+                  </p>
+                </li>
+              )
+            )}
           </ul>
 
           <div className="flex mx-4">
