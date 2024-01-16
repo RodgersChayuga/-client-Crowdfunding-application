@@ -1,9 +1,17 @@
-import React, { useContext, createContext, ReactNode, useState } from "react";
+import React, {
+  useContext,
+  createContext,
+  ReactNode,
+  useState,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import {
   useConnect,
   useAddress,
   useContract,
   useContractWrite,
+  useConnectionStatus,
 } from "@thirdweb-dev/react";
 
 import { ethers } from "ethers";
@@ -15,7 +23,7 @@ interface StateContextType {
   createCampaign: (form: {
     title: string;
     description: string;
-    target: string;
+    target: number;
     deadline: string;
     image: string;
   }) => Promise<void>;
@@ -23,7 +31,9 @@ interface StateContextType {
   getUserCampaigns: () => Promise<any[]>;
   donate: (pId: number, amount: string) => Promise<void>;
   getDonations: (pId: number) => Promise<{ donator: any; donation: string }[]>;
-  printMe: string;
+  connectionStatus: string;
+  toggleDrawer: boolean;
+  setToggleDrawer: Dispatch<SetStateAction<boolean>>;
 }
 
 const StateContext = createContext<StateContextType | undefined>(undefined);
@@ -43,13 +53,15 @@ export const StateContextProvider: React.FC<StateContextProviderProps> = ({
     "createCampaign"
   );
 
+  const [toggleDrawer, setToggleDrawer] = useState(false);
+
   const connect = useConnect();
   const address = useAddress();
 
   const publishCampaign = async (form: {
     title: string;
     description: string;
-    target: string;
+    target: number;
     deadline: string;
     image: string;
   }) => {
@@ -146,7 +158,7 @@ export const StateContextProvider: React.FC<StateContextProviderProps> = ({
     return parsedDonations;
   };
 
-  const printMe = "I am from the global store";
+  const connectionStatus = useConnectionStatus();
 
   return (
     <StateContext.Provider
@@ -159,7 +171,9 @@ export const StateContextProvider: React.FC<StateContextProviderProps> = ({
         getUserCampaigns,
         donate,
         getDonations,
-        printMe,
+        connectionStatus,
+        toggleDrawer,
+        setToggleDrawer,
       }}
     >
       {children}

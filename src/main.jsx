@@ -3,10 +3,14 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
 import {
   ThirdwebProvider,
-  useContract,
+  ConnectWallet,
   metamaskWallet,
   coinbaseWallet,
   walletConnect,
+  localWallet,
+  embeddedWallet,
+  rainbowWallet,
+  en,
 } from "@thirdweb-dev/react";
 import { Sepolia } from "@thirdweb-dev/chains";
 
@@ -23,6 +27,19 @@ if (rootElement) {
     <ThirdwebProvider
       activeChain={sepolia}
       clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
+      locale={en()}
+      supportedWallets={[
+        metamaskWallet(),
+        coinbaseWallet({ recommended: true }),
+        walletConnect(),
+        localWallet(),
+        rainbowWallet(),
+        embeddedWallet({
+          auth: {
+            options: ["email", "google", "apple", "facebook"],
+          },
+        }),
+      ]}
     >
       <StateContextProvider>
         <Router>

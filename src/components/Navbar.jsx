@@ -2,18 +2,19 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useConnect, useAddress, metamaskWallet } from "@thirdweb-dev/react";
 
-import { CustomButton } from "./";
+import { CustomButton, DisconnectButton } from "./";
 import { logo, menu, search, thirdweb } from "../assets";
 import { navlinks } from "../constants";
+import { useStateContext } from "../context";
 
 const Navbar = () => {
   const walletConfig = metamaskWallet();
   const connect = useConnect();
   const address = useAddress();
+  const { toggleDrawer, setToggleDrawer } = useStateContext();
 
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState("dashboard");
-  const [toggleDrawer, setToggleDrawer] = useState(false);
 
   async function handleConnect() {
     if (address) navigate("create-campaign");
@@ -48,12 +49,15 @@ const Navbar = () => {
       </div>
 
       <div className="flex-row justify-end hidden gap-4 sm:flex">
-        <CustomButton
-          btnType="button"
-          title={address ? "Create a campaign" : "Connect"}
-          styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
-          handleClick={handleConnect}
-        />
+        <div className="flex gap-2 ">
+          <CustomButton
+            btnType="button"
+            title={address ? "Create a campaign" : "Connect"}
+            styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
+            handleClick={handleConnect}
+          />
+          <DisconnectButton />
+        </div>
         <Link to="/profile">
           <div className="w-[52px] h-[52px] rounded-full bg-[#2c2f32] flex justify-center items-center cursor-pointer">
             <img
@@ -122,13 +126,14 @@ const Navbar = () => {
             )}
           </ul>
 
-          <div className="flex mx-4">
+          <div className="flex justify-between mx-4">
             <CustomButton
               btnType="button"
               title={address ? "Create a campaign" : "Connect"}
               styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
               handleClick={handleConnect}
             />
+            <DisconnectButton />
           </div>
         </div>
       </div>

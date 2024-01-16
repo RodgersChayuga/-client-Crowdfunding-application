@@ -15,7 +15,7 @@ const CreateCampaign = () => {
     name: "",
     title: "",
     description: "",
-    target: "",
+    target: ethers.BigNumber.from("0"), // Initialize as BigNumber
     deadline: "",
     image: "",
   });
@@ -32,7 +32,9 @@ const CreateCampaign = () => {
         setIsLoading(true);
         await createCampaign({
           ...form,
-          target: ethers.utils.parseUnits(form.target, 18),
+          target: ethers.utils
+            .parseUnits(form.target.toString(), 18)
+            .toNumber(),
         });
         setIsLoading(false);
         navigate("/");
@@ -96,8 +98,8 @@ const CreateCampaign = () => {
           <FormField
             labelName="Goal *"
             placeholder="ETH 0.50"
-            inputType="text"
-            value={form.target}
+            inputType="number"
+            value={form.target.toString()} // Convert BigNumber to string
             handleChange={(e) => handleFormFieldChange("target", e)}
           />
           <FormField
